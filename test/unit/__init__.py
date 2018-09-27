@@ -11,10 +11,3 @@
 #  express or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
 from __future__ import absolute_import
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
->>>>>>> Scriptmode single machine training implementation (#78)
-=======
->>>>>>> Add tox.ini and configure coverage and flake runs (#80)
