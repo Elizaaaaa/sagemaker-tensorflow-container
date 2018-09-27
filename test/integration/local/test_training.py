@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # Copyright 2017-2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+=======
+# Copyright 2017-2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+>>>>>>> Scriptmode single machine training implementation (#78)
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -22,7 +26,6 @@ from test.integration.utils import processor, py_version  # noqa: F401
 
 RESOURCE_PATH = os.path.join(os.path.dirname(__file__), '..', '..', 'resources')
 TF_CHECKPOINT_FILES = ['graph.pbtxt', 'model.ckpt-0.index', 'model.ckpt-0.meta']
-
 
 @pytest.fixture  # noqa: F811
 def py_full_version(py_version):  # noqa: F811
