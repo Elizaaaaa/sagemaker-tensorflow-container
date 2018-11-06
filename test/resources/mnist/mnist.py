@@ -25,6 +25,7 @@ def _load_training_data(base_dir):
     y_train = np.load(os.path.join(base_dir, 'train', 'y_train.npy'))
     return x_train, y_train
 
+
 def _load_testing_data(base_dir):
     x_test = np.load(os.path.join(base_dir, 'test', 'x_test.npy'))
     y_test = np.load(os.path.join(base_dir, 'test', 'y_test.npy'))

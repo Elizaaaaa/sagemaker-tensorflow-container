@@ -16,6 +16,7 @@ import os
 import tarfile
 
 import pytest
+from sagemaker.estimator import Framework
 from sagemaker.tensorflow import TensorFlow
 
 from test.integration.utils import processor, py_version  # noqa: F401

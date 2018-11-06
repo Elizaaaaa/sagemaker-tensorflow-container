@@ -24,6 +24,7 @@ import tensorflow as tf
 
 from sagemaker_tensorflow_container import s3_utils
 
+
 logger = logging.getLogger(__name__)
 
 SAGEMAKER_PARAMETER_SERVER_ENABLED = 'sagemaker_parameter_server_enabled'
