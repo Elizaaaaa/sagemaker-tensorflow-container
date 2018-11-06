@@ -15,10 +15,17 @@ from __future__ import absolute_import
 import os
 
 import boto3
+<<<<<<< HEAD
 import pytest
 from sagemaker.tensorflow import TensorFlow
 from sagemaker.tuner import HyperparameterTuner, IntegerParameter
 from six.moves.urllib.parse import urlparse
+=======
+from sagemaker.tensorflow import TensorFlow
+from six.moves.urllib.parse import urlparse
+
+from sagemaker_tensorflow_container.training import SAGEMAKER_PARAMETER_SERVER_ENABLED
+>>>>>>> Add distributed training support (#98)
 
 from test.integration.utils import processor, py_version, unique_name_from_base  # noqa: F401
 from timeout import timeout
@@ -57,6 +64,7 @@ def test_distributed_mnist_no_ps(sagemaker_session, ecr_image, instance_type, fr
     inputs = estimator.sagemaker_session.upload_data(
         path=os.path.join(resource_path, 'mnist', 'data'),
         key_prefix='scriptmode/mnist')
+<<<<<<< HEAD
     estimator.fit(inputs, job_name=unique_name_from_base('test-tf-sm-distributed-mnist'))
     _assert_s3_file_exists(sagemaker_session.boto_region_name, estimator.model_data)
 
@@ -67,10 +75,25 @@ def test_distributed_mnist_ps(sagemaker_session, ecr_image, instance_type, frame
     estimator = TensorFlow(entry_point=script,
                            role='SageMakerRole',
                            hyperparameters={'sagemaker_parameter_server_enabled': True},
+=======
+    estimator.fit(inputs)
+    model_s3_url = estimator.create_model().model_data
+    _assert_s3_file_exists(model_s3_url)
+
+
+def test_distributed_mnist_no_ps(sagemaker_session, ecr_image, instance_type):
+    resource_path = os.path.join(os.path.dirname(__file__), '../..', 'resources')
+    script = os.path.join(resource_path, 'mnist', 'distributed_mnist.py')
+    estimator = TensorFlow(entry_point=script,
+                           role='SageMakerRole',
+                           training_steps=1,
+                           evaluation_steps=1,
+>>>>>>> Add distributed training support (#98)
                            train_instance_count=2,
                            train_instance_type=instance_type,
                            sagemaker_session=sagemaker_session,
                            image_name=ecr_image,
+<<<<<<< HEAD
                            framework_version=framework_version,
                            script_mode=True)
     inputs = estimator.sagemaker_session.upload_data(
@@ -157,4 +180,43 @@ def _assert_checkpoint_exists(region, model_dir, checkpoint_number):
 def _assert_s3_file_exists(region, s3_url):
     parsed_url = urlparse(s3_url)
     s3 = boto3.resource('s3', region_name=region)
+=======
+                           base_job_name='test-tf-sm-distributed-mnist')
+    inputs = estimator.sagemaker_session.upload_data(
+        path=os.path.join(resource_path, 'mnist', 'data-distributed'),
+        key_prefix='scriptmode/mnist-distributed')
+    estimator.fit(inputs)
+    _assert_s3_file_exists(os.path.join(estimator.checkpoint_path, 'graph.pbtxt'))
+    _assert_s3_file_exists(os.path.join(estimator.checkpoint_path, 'model.ckpt-0.index'))
+    _assert_s3_file_exists(os.path.join(estimator.checkpoint_path, 'model.ckpt-0.meta'))
+
+
+def test_distributed_mnist_ps(sagemaker_session, ecr_image, instance_type):
+    resource_path = os.path.join(os.path.dirname(__file__), '..', '..', 'resources')
+    script = os.path.join(resource_path, 'mnist', 'distributed_mnist.py')
+    estimator = TensorFlow(entry_point=script,
+                           role='SageMakerRole',
+                           # training_steps and evaluation_steps are legacy parameters from
+                           # framework mode. These number are not used in the training job.
+                           training_steps=1,
+                           evaluation_steps=1,
+                           hyperparameters={SAGEMAKER_PARAMETER_SERVER_ENABLED: True},
+                           train_instance_count=2,
+                           train_instance_type=instance_type,
+                           sagemaker_session=sagemaker_session,
+                           image_name=ecr_image,
+                           base_job_name='test-tf-sm-distributed-mnist')
+    inputs = estimator.sagemaker_session.upload_data(
+        path=os.path.join(resource_path, 'mnist', 'data-distributed'),
+        key_prefix='scriptmode/mnist-distributed')
+    estimator.fit(inputs)
+    _assert_s3_file_exists(os.path.join(estimator.checkpoint_path, 'graph.pbtxt'))
+    _assert_s3_file_exists(os.path.join(estimator.checkpoint_path, 'model.ckpt-0.index'))
+    _assert_s3_file_exists(os.path.join(estimator.checkpoint_path, 'model.ckpt-0.meta'))
+
+
+def _assert_s3_file_exists(s3_url):
+    parsed_url = urlparse(s3_url)
+    s3 = boto3.resource('s3')
+>>>>>>> Add distributed training support (#98)
     s3.Object(parsed_url.netloc, parsed_url.path.lstrip('/')).load()
