@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends software-proper
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
+<<<<<<< HEAD
     build-essential \
     curl \
     nginx \
@@ -23,6 +24,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
        then apt-get install -y --no-install-recommends python3.6-dev \
            && ln -s -f /usr/bin/python3.6 /usr/bin/python; \
        else apt-get install -y --no-install-recommends python-dev; fi \
+=======
+    curl \
+    nginx \
+    && if [ $py_version -eq 3 ]; \
+       then apt-get install -y --no-install-recommends python3.6 \
+           && ln -s -f /usr/bin/python3.6 /usr/bin/python; \
+       else apt-get install -y --no-install-recommends python; fi \
+>>>>>>> Add distributed training support (#98)
     && rm -rf /var/lib/apt/lists/*
 
 # Python won’t try to write .pyc or .pyo files on the import of source modules
@@ -54,6 +63,7 @@ WORKDIR /
 COPY $framework_installable .
 COPY $framework_support_installable .
 
+<<<<<<< HEAD
 RUN pip install --no-cache-dir -U \
     keras==2.2.4 \
     $framework_support_installable \
@@ -61,6 +71,11 @@ RUN pip install --no-cache-dir -U \
     # Let's install TensorFlow separately in the end to avoid
     # the library version to be overwritten
     && pip install --force-reinstall --no-cache-dir -U $framework_installable \
+=======
+RUN pip install --no-cache-dir $framework_installable \
+    $framework_support_installable\
+    "sagemaker-tensorflow>=1.11,<1.12" \
+>>>>>>> Add distributed training support (#98)
     \
     && rm -f $framework_installable \
     && rm -f $framework_support_installable \

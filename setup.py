@@ -54,7 +54,11 @@ setup(
         'Programming Language :: Python :: 3.6',
     ],
 
+<<<<<<< HEAD
     install_requires=['sagemaker-containers>=2.4.6', 'numpy', 'scipy', 'sklearn',
+=======
+    install_requires=['sagemaker-containers>=2.2.6', 'numpy', 'scipy', 'sklearn',
+>>>>>>> Add distributed training support (#98)
                       'pandas', 'Pillow', 'h5py'],
     extras_require={
         'test': ['tox', 'flake8', 'pytest', 'pytest-cov', 'pytest-xdist', 'mock',
