@@ -15,10 +15,14 @@ from __future__ import absolute_import
 import json
 import logging
 <<<<<<< HEAD
+<<<<<<< HEAD
 import multiprocessing
 import os
 =======
 >>>>>>> Add distributed training support (#98)
+=======
+import os
+>>>>>>> Set S3 environment variables (#112)
 import subprocess
 import time
 
@@ -26,6 +30,8 @@ import sagemaker_containers.beta.framework as framework
 import tensorflow as tf
 
 from sagemaker_tensorflow_container import s3_utils
+
+import sagemaker_tensorflow_container.s3_utils as s3_utils
 
 
 logger = logging.getLogger(__name__)
@@ -305,6 +311,7 @@ def main():
     """
     hyperparameters = framework.env.read_hyperparameters()
     env = framework.training_env(hyperparameters=hyperparameters)
+<<<<<<< HEAD
 
     user_hyperparameters = env.hyperparameters
 
@@ -318,3 +325,8 @@ def main():
     s3_utils.configure(user_hyperparameters.get('model_dir'), os.environ.get('SAGEMAKER_REGION'))
     train(env, framework.mapping.to_cmd_args(user_hyperparameters))
     _log_model_missing_warning(MODEL_DIR)
+=======
+    s3_utils.configure(env.hyperparameters.get('model_dir'), os.environ.get('SAGEMAKER_REGION'))
+    logger.setLevel(env.log_level)
+    train(env)
+>>>>>>> Set S3 environment variables (#112)

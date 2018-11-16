@@ -319,6 +319,7 @@ import pytest
 >>>>>>> Add tox.ini and configure coverage and flake runs (#80)
 =======
 import json
+import os
 
 >>>>>>> Add distributed training support (#98)
 from mock import MagicMock, patch
@@ -343,6 +344,8 @@ MASTER_TASK = {'index': 0, 'type': 'master'}
 WORKER_TASK = {'index': 0, 'type': 'worker'}
 PS_TASK_1 = {'index': 0, 'type': 'ps'}
 PS_TASK_2 = {'index': 1, 'type': 'ps'}
+MODEL_DIR = 's3://bucket/prefix'
+REGION = 'us-west-2'
 
 
 @pytest.fixture
@@ -368,7 +371,7 @@ def single_machine_training_env():
 
     env.module_dir = MODULE_DIR
     env.module_name = MODULE_NAME
-    env.hyperparameters = {}
+    env.hyperparameters = {'model_dir': MODEL_DIR}
     env.log_level = LOG_LEVEL
 
     return env
@@ -505,11 +508,18 @@ def test_build_tf_config_error():
 @patch('logging.Logger.setLevel')
 @patch('sagemaker_containers.beta.framework.training_env')
 @patch('sagemaker_containers.beta.framework.env.read_hyperparameters', return_value={})
-def test_main(read_hyperparameters, training_env, set_level, train, single_machine_training_env):
+@patch('sagemaker_tensorflow_container.s3_utils.configure')
+def test_main(configure_s3_env, read_hyperparameters, training_env,
+              set_level, train, single_machine_training_env):
     training_env.return_value = single_machine_training_env
+    os.environ['SAGEMAKER_REGION'] = REGION
     training.main()
     read_hyperparameters.assert_called_once_with()
     training_env.assert_called_once_with(hyperparameters={})
     set_level.assert_called_once_with(LOG_LEVEL)
     train.assert_called_once_with(single_machine_training_env)
+<<<<<<< HEAD
 >>>>>>> Add tox.ini and configure coverage and flake runs (#80)
+=======
+    configure_s3_env.assert_called_once()
+>>>>>>> Set S3 environment variables (#112)
