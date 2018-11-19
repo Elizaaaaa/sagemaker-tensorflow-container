@@ -85,6 +85,7 @@ COPY $framework_installable .
 COPY $framework_support_installable .
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 RUN pip install --no-cache-dir -U \
     keras==2.2.4 \
     $framework_support_installable \
@@ -94,6 +95,9 @@ RUN pip install --no-cache-dir -U \
     && pip install --force-reinstall --no-cache-dir -U $framework_installable \
 =======
 RUN pip install --no-cache-dir $framework_installable \
+=======
+RUN pip install --no-cache-dir -U $framework_installable \
+>>>>>>> GPU fix (#117)
     $framework_support_installable\
     "sagemaker-tensorflow>=1.11,<1.12" \
 >>>>>>> Add distributed training support (#98)
