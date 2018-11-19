@@ -194,12 +194,12 @@ def _env_vars_with_tf_config(env, ps_task):
 
 def _run_ps(env):
     env_vars = _env_vars_with_tf_config(env, ps_task=True)
-    return framework.modules.run_module(
-        env.module_dir, env.to_cmd_args(), env_vars, env.module_name, wait=False)
+    framework.entry_point.run(env.module_dir, env.user_entry_point, env.to_cmd_args(), env_vars)
 
 
-def _run_worker(env, install_module=False):
+def _run_worker(env):
     env_vars = _env_vars_with_tf_config(env, ps_task=False)
+<<<<<<< HEAD
     if install_module:
         return framework.modules.run_module(
             env.module_dir, env.to_cmd_args(), env_vars, env.module_name)
@@ -207,6 +207,9 @@ def _run_worker(env, install_module=False):
         framework.modules.write_env_vars(env_vars)
         framework.modules.run(env.module_name, env.to_cmd_args(), env_vars)
 >>>>>>> Add distributed training support (#98)
+=======
+    framework.entry_point.run(env.module_dir, env.user_entry_point, env.to_cmd_args(), env_vars)
+>>>>>>> Update sagemaker containers (#119)
 
 
 def _wait_until_master_is_down(master):
@@ -248,13 +251,18 @@ def train(env):
         logger.info('Launching parameter server process')
         _run_ps(env)
         logger.info('Launching worker process')
+<<<<<<< HEAD
         _run_worker(env, install_module=False)
 >>>>>>> Add distributed training support (#98)
+=======
+        _run_worker(env)
+>>>>>>> Update sagemaker containers (#119)
 
         if not _is_host_master(env.hosts, env.current_host):
             _wait_until_master_is_down(env.hosts[0])
 
     else:
+<<<<<<< HEAD
 <<<<<<< HEAD
 
         mpi_enabled = env.additional_framework_parameters.get('sagemaker_mpi_enabled')
@@ -304,6 +312,10 @@ def _model_dir_with_training_job(model_dir, job_name):
         framework.modules.run_module(env.module_dir, env.to_cmd_args(),
                                      env.to_env_vars(), env.module_name)
 >>>>>>> Add distributed training support (#98)
+=======
+        framework.entry_point.run(env.module_dir, env.user_entry_point,
+                                  env.to_cmd_args(), env.to_env_vars())
+>>>>>>> Update sagemaker containers (#119)
 
 
 def main():
