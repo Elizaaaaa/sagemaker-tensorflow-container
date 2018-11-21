@@ -56,6 +56,7 @@ setup(
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     install_requires=['sagemaker-containers>=2.4.6', 'numpy', 'scipy', 'sklearn',
 =======
     install_requires=['sagemaker-containers>=2.2.6', 'numpy', 'scipy', 'sklearn',
@@ -63,6 +64,9 @@ setup(
 =======
     install_requires=['sagemaker-containers>==2.3.1', 'numpy', 'scipy', 'sklearn',
 >>>>>>> Update sagemaker containers (#119)
+=======
+    install_requires=['sagemaker-containers>=2.3.4', 'numpy', 'scipy', 'sklearn',
+>>>>>>> Disable GPU for parameter process (#121)
                       'pandas', 'Pillow', 'h5py'],
     extras_require={
         'test': ['tox', 'flake8', 'pytest', 'pytest-cov', 'pytest-xdist', 'mock',
