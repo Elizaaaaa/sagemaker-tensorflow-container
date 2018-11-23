@@ -321,6 +321,7 @@ import pytest
 import json
 import os
 import subprocess
+import sys
 
 >>>>>>> Add distributed training support (#98)
 from mock import MagicMock, patch
@@ -397,6 +398,8 @@ def test_single_machine(run_module, single_machine_training_env):
 >>>>>>> Update sagemaker containers (#119)
 
 
+@pytest.mark.skipif(sys.version_info.major != 3,
+                    reason="Skip this for python 2 because of dict key order mismatch")
 @patch('sagemaker_containers.beta.framework.entry_point.run')
 @patch('time.sleep', MagicMock())
 def test_train_distributed_master(run, distributed_training_env):
@@ -411,7 +414,7 @@ def test_train_distributed_master(run, distributed_training_env):
 
     run.assert_any_call('s3://my/bucket', 'script_name',
                         distributed_training_env.to_cmd_args(),
-                        {'TF_CONFIG': ps_tf_config},
+                        {'TF_CONFIG': ps_tf_config, 'CUDA_VISIBLE_DEVICES': '-1'},
                         wait=False)
 
     master_tf_config = '{"cluster": {' \
@@ -426,6 +429,8 @@ def test_train_distributed_master(run, distributed_training_env):
                            {'TF_CONFIG': master_tf_config})
 
 
+@pytest.mark.skipif(sys.version_info.major != 3,
+                    reason="Skip this for python 2 because of dict key order mismatch")
 @patch('subprocess.check_call')
 @patch('time.sleep', MagicMock())
 @patch('sagemaker_containers.beta.framework.entry_point.run')
@@ -446,7 +451,8 @@ def test_train_distributed_worker(run,
 
     run.assert_any_call('s3://my/bucket', 'script_name',
                         distributed_training_env.to_cmd_args(),
-                        {'TF_CONFIG': ps_tf_config}, wait=False)
+                        {'TF_CONFIG': ps_tf_config, 'CUDA_VISIBLE_DEVICES': '-1'},
+                        wait=False)
 
     master_tf_config = '{"cluster": {' \
                        '"master": ["host1:2222"], ' \
