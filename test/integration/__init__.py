@@ -13,6 +13,7 @@
 from __future__ import absolute_import
 
 import logging
+import os
 
 logging.getLogger('boto3').setLevel(logging.INFO)
 logging.getLogger('botocore').setLevel(logging.INFO)

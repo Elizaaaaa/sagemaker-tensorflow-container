@@ -65,6 +65,7 @@ COPY $framework_support_installable .
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 RUN pip install --no-cache-dir -U \
     keras==2.2.4 \
     $framework_support_installable \
@@ -80,6 +81,15 @@ RUN pip install --no-cache-dir -U $framework_installable \
     $framework_support_installable\
     "sagemaker-tensorflow>=1.11,<1.12" \
 >>>>>>> Add distributed training support (#98)
+=======
+RUN pip install --no-cache-dir -U \
+    keras==2.2.4 \
+    $framework_support_installable \
+    "sagemaker-tensorflow>=1.11,<1.12" \
+    # Let's install TensorFlow separately in the end to avoid
+    # the library version to be overwritten
+    && pip install --force-reinstall --no-cache-dir -U $framework_installable \
+>>>>>>> Add Keras support (#126)
     \
     && rm -f $framework_installable \
     && rm -f $framework_support_installable \
