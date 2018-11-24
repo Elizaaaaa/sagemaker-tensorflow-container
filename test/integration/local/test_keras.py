@@ -16,18 +16,28 @@ import logging
 import os
 
 import numpy as np
+<<<<<<< HEAD
 import pytest
 from sagemaker.tensorflow import serving, TensorFlow
 
 from test.integration import RESOURCE_PATH
 from test.integration.utils import processor, py_version  # noqa: F401
+=======
+from sagemaker.tensorflow import serving, TensorFlow
+
+from test.integration import RESOURCE_PATH
+>>>>>>> Add Keras support (#126)
 
 
 logging.basicConfig(level=logging.DEBUG)
 
 
+<<<<<<< HEAD
 @pytest.mark.skip(reason="Serving part fails because of version mismatch.")
 def test_keras_training(sagemaker_local_session, docker_image, tmpdir, framework_version):
+=======
+def test_keras_training(sagemaker_local_session, docker_image, tmpdir):
+>>>>>>> Add Keras support (#126)
     entry_point = os.path.join(RESOURCE_PATH, 'keras_inception.py')
     output_path = 'file://{}'.format(tmpdir)
 
@@ -36,18 +46,30 @@ def test_keras_training(sagemaker_local_session, docker_image, tmpdir, framework
         role='SageMakerRole',
         train_instance_count=1,
         train_instance_type='local',
+<<<<<<< HEAD
         image_name=docker_image,
         sagemaker_session=sagemaker_local_session,
         model_dir='/opt/ml/model',
         output_path=output_path,
         framework_version=framework_version,
+=======
+        sagemaker_session=sagemaker_local_session,
+        model_dir='/opt/ml/model',
+        output_path=output_path,
+        framework_version='1.11.0',
+>>>>>>> Add Keras support (#126)
         py_version='py3')
 
     estimator.fit()
 
+<<<<<<< HEAD
     model = serving.Model(model_data=output_path,
                           role='SageMakerRole',
                           framework_version=framework_version,
+=======
+    model = serving.Model(model_data=output_path, role='SageMakerRole',
+                          framework_version='1.11.0',
+>>>>>>> Add Keras support (#126)
                           sagemaker_session=sagemaker_local_session)
 
     predictor = model.deploy(initial_instance_count=1, instance_type='local')

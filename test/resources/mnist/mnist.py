@@ -3,10 +3,13 @@ import argparse
 import os
 import numpy as np
 <<<<<<< HEAD
+<<<<<<< HEAD
 import json
 =======
 import sys
 >>>>>>> Scriptmode single machine training implementation (#78)
+=======
+>>>>>>> Add Keras support (#126)
 
 
 def _parse_args():
