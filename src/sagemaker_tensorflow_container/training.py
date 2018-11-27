@@ -24,18 +24,22 @@ import os
 import os
 >>>>>>> Set S3 environment variables (#112)
 import subprocess
+import threading
 import time
 
 import sagemaker_containers.beta.framework as framework
 import tensorflow as tf
+<<<<<<< HEAD
+
+from sagemaker_tensorflow_container import s3_utils
+=======
+>>>>>>> Create parameter server in different thread (#129)
 
 from sagemaker_tensorflow_container import s3_utils
 
-import sagemaker_tensorflow_container.s3_utils as s3_utils
-
-
 logger = logging.getLogger(__name__)
 
+<<<<<<< HEAD
 SAGEMAKER_PARAMETER_SERVER_ENABLED = 'sagemaker_parameter_server_enabled'
 MODEL_DIR = '/opt/ml/model'
 
@@ -122,6 +126,8 @@ def _run_worker(env, cmd_args, tf_config):
 <<<<<<< HEAD
     framework.entry_point.run(env.module_dir, env.user_entry_point, cmd_args, env_vars)
 =======
+=======
+>>>>>>> Create parameter server in different thread (#129)
 SAGEMAKER_PARAMETER_SERVER_ENABLED = 'sagemaker_parameter_server_enabled'
 
 
@@ -183,8 +189,20 @@ def _build_tf_config(hosts, current_host, ps_task=False):
     return tf_config
 
 
-def _env_vars_with_tf_config(env, ps_task):
+def _run_ps(env, cluster):
+    logger.info('Running distributed training job with parameter servers')
+
+    cluster_spec = tf.train.ClusterSpec(cluster)
+    task_index = env.hosts.index(env.current_host)
+
+    server = tf.train.Server(cluster_spec, job_name='ps', task_index=task_index)
+
+    threading.Thread(target=lambda: server.join()).start()
+
+
+def _run_worker(env, tf_config):
     env_vars = env.to_env_vars()
+<<<<<<< HEAD
     env_vars['TF_CONFIG'] = json.dumps(_build_tf_config(
         hosts=env.hosts,
         current_host=env.current_host,
@@ -216,6 +234,10 @@ def _run_worker(env):
         framework.modules.run(env.module_name, env.to_cmd_args(), env_vars)
 >>>>>>> Add distributed training support (#98)
 =======
+=======
+    env_vars['TF_CONFIG'] = json.dumps(tf_config)
+
+>>>>>>> Create parameter server in different thread (#129)
     framework.entry_point.run(env.module_dir, env.user_entry_point, env.to_cmd_args(), env_vars)
 >>>>>>> Update sagemaker containers (#119)
 
@@ -247,6 +269,7 @@ def train(env):
     if len(env.hosts) > 1 and parameter_server_enabled:
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         tf_config = _build_tf_config(hosts=env.hosts, current_host=env.current_host)
 
         logger.info('Running distributed training job with parameter servers')
@@ -255,16 +278,24 @@ def train(env):
         logger.info('Launching worker process')
         _run_worker(env, cmd_args, tf_config)
 =======
+=======
+        tf_config = _build_tf_config(hosts=env.hosts, current_host=env.current_host)
+
+>>>>>>> Create parameter server in different thread (#129)
         logger.info('Running distributed training job with parameter servers')
         logger.info('Launching parameter server process')
-        _run_ps(env)
+        _run_ps(env, tf_config['cluster'])
         logger.info('Launching worker process')
+<<<<<<< HEAD
 <<<<<<< HEAD
         _run_worker(env, install_module=False)
 >>>>>>> Add distributed training support (#98)
 =======
         _run_worker(env)
 >>>>>>> Update sagemaker containers (#119)
+=======
+        _run_worker(env, tf_config)
+>>>>>>> Create parameter server in different thread (#129)
 
         if not _is_host_master(env.hosts, env.current_host):
             _wait_until_master_is_down(env.hosts[0])

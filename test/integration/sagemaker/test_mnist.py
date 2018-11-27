@@ -37,6 +37,7 @@ def test_mnist(sagemaker_session, ecr_image, instance_type, framework_version):
     script = os.path.join(resource_path, 'mnist', 'mnist.py')
     estimator = TensorFlow(entry_point=script,
                            role='SageMakerRole',
+<<<<<<< HEAD
                            train_instance_type=instance_type,
                            train_instance_count=1,
                            sagemaker_session=sagemaker_session,
@@ -56,11 +57,20 @@ def test_distributed_mnist_no_ps(sagemaker_session, ecr_image, instance_type, fr
     estimator = TensorFlow(entry_point=script,
                            role='SageMakerRole',
                            train_instance_count=2,
+=======
+>>>>>>> Create parameter server in different thread (#129)
                            train_instance_type=instance_type,
+                           train_instance_count=1,
                            sagemaker_session=sagemaker_session,
                            image_name=ecr_image,
+<<<<<<< HEAD
                            framework_version=framework_version,
                            script_mode=True)
+=======
+                           framework_version='1.11.0',
+                           py_version='py3',
+                           base_job_name='test-sagemaker-mnist')
+>>>>>>> Create parameter server in different thread (#129)
     inputs = estimator.sagemaker_session.upload_data(
         path=os.path.join(resource_path, 'mnist', 'data'),
         key_prefix='scriptmode/mnist')
@@ -86,13 +96,17 @@ def test_distributed_mnist_no_ps(sagemaker_session, ecr_image, instance_type):
     script = os.path.join(resource_path, 'mnist', 'distributed_mnist.py')
     estimator = TensorFlow(entry_point=script,
                            role='SageMakerRole',
+<<<<<<< HEAD
                            training_steps=1,
                            evaluation_steps=1,
 >>>>>>> Add distributed training support (#98)
+=======
+>>>>>>> Create parameter server in different thread (#129)
                            train_instance_count=2,
                            train_instance_type=instance_type,
                            sagemaker_session=sagemaker_session,
                            image_name=ecr_image,
+<<<<<<< HEAD
 <<<<<<< HEAD
                            framework_version=framework_version,
                            script_mode=True)
@@ -181,14 +195,17 @@ def _assert_s3_file_exists(region, s3_url):
     parsed_url = urlparse(s3_url)
     s3 = boto3.resource('s3', region_name=region)
 =======
+=======
+                           framework_version='1.11.0',
+                           py_version='py3',
+>>>>>>> Create parameter server in different thread (#129)
                            base_job_name='test-tf-sm-distributed-mnist')
     inputs = estimator.sagemaker_session.upload_data(
         path=os.path.join(resource_path, 'mnist', 'data-distributed'),
         key_prefix='scriptmode/mnist-distributed')
     estimator.fit(inputs)
-    _assert_s3_file_exists(os.path.join(estimator.checkpoint_path, 'graph.pbtxt'))
-    _assert_s3_file_exists(os.path.join(estimator.checkpoint_path, 'model.ckpt-0.index'))
-    _assert_s3_file_exists(os.path.join(estimator.checkpoint_path, 'model.ckpt-0.meta'))
+    model_s3_url = estimator.create_model().model_data
+    _assert_s3_file_exists(model_s3_url)
 
 
 def test_distributed_mnist_ps(sagemaker_session, ecr_image, instance_type):
@@ -196,23 +213,21 @@ def test_distributed_mnist_ps(sagemaker_session, ecr_image, instance_type):
     script = os.path.join(resource_path, 'mnist', 'distributed_mnist.py')
     estimator = TensorFlow(entry_point=script,
                            role='SageMakerRole',
-                           # training_steps and evaluation_steps are legacy parameters from
-                           # framework mode. These number are not used in the training job.
-                           training_steps=1,
-                           evaluation_steps=1,
                            hyperparameters={SAGEMAKER_PARAMETER_SERVER_ENABLED: True},
                            train_instance_count=2,
                            train_instance_type=instance_type,
                            sagemaker_session=sagemaker_session,
                            image_name=ecr_image,
+                           framework_version='1.11.0',
+                           py_version='py3',
                            base_job_name='test-tf-sm-distributed-mnist')
     inputs = estimator.sagemaker_session.upload_data(
         path=os.path.join(resource_path, 'mnist', 'data-distributed'),
         key_prefix='scriptmode/mnist-distributed')
     estimator.fit(inputs)
-    _assert_s3_file_exists(os.path.join(estimator.checkpoint_path, 'graph.pbtxt'))
-    _assert_s3_file_exists(os.path.join(estimator.checkpoint_path, 'model.ckpt-0.index'))
-    _assert_s3_file_exists(os.path.join(estimator.checkpoint_path, 'model.ckpt-0.meta'))
+    _assert_s3_file_exists(os.path.join(estimator.model_dir, 'graph.pbtxt'))
+    _assert_s3_file_exists(os.path.join(estimator.model_dir, 'model.ckpt-0.index'))
+    _assert_s3_file_exists(os.path.join(estimator.model_dir, 'model.ckpt-0.meta'))
 
 
 def _assert_s3_file_exists(s3_url):

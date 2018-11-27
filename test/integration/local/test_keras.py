@@ -47,12 +47,16 @@ def test_keras_training(sagemaker_local_session, docker_image, tmpdir):
         train_instance_count=1,
         train_instance_type='local',
 <<<<<<< HEAD
+<<<<<<< HEAD
         image_name=docker_image,
         sagemaker_session=sagemaker_local_session,
         model_dir='/opt/ml/model',
         output_path=output_path,
         framework_version=framework_version,
 =======
+=======
+        image_name=docker_image,
+>>>>>>> Create parameter server in different thread (#129)
         sagemaker_session=sagemaker_local_session,
         model_dir='/opt/ml/model',
         output_path=output_path,
@@ -63,11 +67,16 @@ def test_keras_training(sagemaker_local_session, docker_image, tmpdir):
     estimator.fit()
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     model = serving.Model(model_data=output_path,
                           role='SageMakerRole',
                           framework_version=framework_version,
 =======
     model = serving.Model(model_data=output_path, role='SageMakerRole',
+=======
+    model = serving.Model(model_data=output_path,
+                          role='SageMakerRole',
+>>>>>>> Create parameter server in different thread (#129)
                           framework_version='1.11.0',
 >>>>>>> Add Keras support (#126)
                           sagemaker_session=sagemaker_local_session)
