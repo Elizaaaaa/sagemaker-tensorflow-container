@@ -91,6 +91,8 @@ def test_single_machine(run_module, single_machine_training_env):
 
 @pytest.mark.skipif(sys.version_info.major != 3,
                     reason="Skip this for python 2 because of dict key order mismatch")
+@patch('tensorflow.train.ClusterSpec')
+@patch('tensorflow.train.Server')
 @patch('sagemaker_containers.beta.framework.entry_point.run')
 def test_train_horovod(run_module, single_machine_training_env):
     single_machine_training_env.additional_framework_parameters['sagemaker_mpi_enabled'] = True

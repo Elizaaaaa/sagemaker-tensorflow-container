@@ -17,13 +17,13 @@ import logging
 import multiprocessing
 import os
 import subprocess
+import threading
 import time
 
 import sagemaker_containers.beta.framework as framework
 import tensorflow as tf
 
 from sagemaker_tensorflow_container import s3_utils
-
 
 logger = logging.getLogger(__name__)
 
