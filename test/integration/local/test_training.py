@@ -16,11 +16,11 @@ import os
 import tarfile
 
 import pytest
-from sagemaker.estimator import Framework
 from sagemaker.tensorflow import TensorFlow
 
 from test.integration.utils import processor, py_version  # noqa: F401
 
+<<<<<<< HEAD
 RESOURCE_PATH = os.path.join(os.path.dirname(__file__), '..', '..', 'resources')
 TF_CHECKPOINT_FILES = ['graph.pbtxt', 'model.ckpt-0.index', 'model.ckpt-0.meta']
 
@@ -28,6 +28,8 @@ TF_CHECKPOINT_FILES = ['graph.pbtxt', 'model.ckpt-0.index', 'model.ckpt-0.meta']
 @pytest.fixture  # noqa: F811
 def py_full_version(py_version):  # noqa: F811
 =======
+=======
+>>>>>>> Create parameter server in different thread (#129)
 RESOURCE_PATH = os.path.join(os.path.dirname(__file__), '..', '..', 'resources')
 TF_CHECKPOINT_FILES = ['graph.pbtxt', 'model.ckpt-0.index', 'model.ckpt-0.meta']
 
@@ -158,6 +160,7 @@ def test_distributed_training_cpu_ps(sagemaker_local_session, docker_image, tmpd
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 def run_tf_training(script,
                     instance_type,
                     instance_count,
@@ -212,6 +215,29 @@ def run_tf_training(script, instance_type, instance_count,
                                      hyperparameters=hyperparameters,
                                      base_job_name='test-tf')
 >>>>>>> Add distributed training support (#98)
+=======
+def run_tf_training(script,
+                    instance_type,
+                    instance_count,
+                    sagemaker_local_session,
+                    docker_image, training_data_path, output_path=None,
+                    hyperparameters=None):
+
+    hyperparameters = hyperparameters or {}
+
+    estimator = TensorFlow(entry_point=script,
+                           role='SageMakerRole',
+                           train_instance_count=instance_count,
+                           train_instance_type=instance_type,
+                           sagemaker_session=sagemaker_local_session,
+                           image_name=docker_image,
+                           model_dir='/opt/ml/model',
+                           output_path=output_path,
+                           hyperparameters=hyperparameters,
+                           base_job_name='test-tf',
+                           framework_version='1.11.0',
+                           py_version='py3')
+>>>>>>> Create parameter server in different thread (#129)
 
     estimator.fit(training_data_path)
 

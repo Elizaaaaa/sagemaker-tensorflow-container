@@ -70,7 +70,11 @@ setup(
                       'pandas', 'Pillow', 'h5py'],
     extras_require={
         'test': ['tox', 'flake8', 'pytest', 'pytest-cov', 'pytest-xdist', 'mock',
+<<<<<<< HEAD
                  'sagemaker==1.19.1', 'tensorflow<2.0', 'docker-compose', 'botocore>=1.12.140'],
         'benchmark': ['click']
+=======
+                 'sagemaker>=1.15.2', 'tensorflow', 'docker-compose']
+>>>>>>> Create parameter server in different thread (#129)
     },
 )
