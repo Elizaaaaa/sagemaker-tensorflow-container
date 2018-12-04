@@ -17,6 +17,9 @@ import os
 
 import numpy as np
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Fix Keras test (#132)
 import pytest
 from sagemaker.tensorflow import serving, TensorFlow
 
@@ -33,11 +36,21 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 @pytest.mark.skip(reason="Serving part fails because of version mismatch.")
 def test_keras_training(sagemaker_local_session, docker_image, tmpdir, framework_version):
 =======
 def test_keras_training(sagemaker_local_session, docker_image, tmpdir):
 >>>>>>> Add Keras support (#126)
+=======
+@pytest.fixture
+def local_mode_instance_type(processor):
+    instance_type = 'local' if processor == 'cpu' else 'local_gpu'
+    return instance_type
+
+
+def test_keras_training(sagemaker_local_session, docker_image, tmpdir, local_mode_instance_type):
+>>>>>>> Fix Keras test (#132)
     entry_point = os.path.join(RESOURCE_PATH, 'keras_inception.py')
     output_path = 'file://{}'.format(tmpdir)
 
@@ -45,9 +58,13 @@ def test_keras_training(sagemaker_local_session, docker_image, tmpdir):
         entry_point=entry_point,
         role='SageMakerRole',
         train_instance_count=1,
+<<<<<<< HEAD
         train_instance_type='local',
 <<<<<<< HEAD
 <<<<<<< HEAD
+=======
+        train_instance_type=local_mode_instance_type,
+>>>>>>> Fix Keras test (#132)
         image_name=docker_image,
         sagemaker_session=sagemaker_local_session,
         model_dir='/opt/ml/model',
