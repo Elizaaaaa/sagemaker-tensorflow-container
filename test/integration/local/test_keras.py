@@ -37,6 +37,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 @pytest.mark.skip(reason="Serving part fails because of version mismatch.")
 def test_keras_training(sagemaker_local_session, docker_image, tmpdir, framework_version):
 =======
@@ -51,6 +52,10 @@ def local_mode_instance_type(processor):
 
 def test_keras_training(sagemaker_local_session, docker_image, tmpdir, local_mode_instance_type):
 >>>>>>> Fix Keras test (#132)
+=======
+@pytest.mark.skip_gpu
+def test_keras_training(sagemaker_local_session, docker_image, tmpdir):
+>>>>>>> Skip keras local mode test on gpu and use random port for serving in the test (#134)
     entry_point = os.path.join(RESOURCE_PATH, 'keras_inception.py')
     output_path = 'file://{}'.format(tmpdir)
 
@@ -59,12 +64,16 @@ def test_keras_training(sagemaker_local_session, docker_image, tmpdir, local_mod
         role='SageMakerRole',
         train_instance_count=1,
 <<<<<<< HEAD
+<<<<<<< HEAD
         train_instance_type='local',
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
         train_instance_type=local_mode_instance_type,
 >>>>>>> Fix Keras test (#132)
+=======
+        train_instance_type='local',
+>>>>>>> Skip keras local mode test on gpu and use random port for serving in the test (#134)
         image_name=docker_image,
         sagemaker_session=sagemaker_local_session,
         model_dir='/opt/ml/model',
