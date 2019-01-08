@@ -54,27 +54,11 @@ setup(
         'Programming Language :: Python :: 3.6',
     ],
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
     install_requires=['sagemaker-containers>=2.4.6', 'numpy', 'scipy', 'sklearn',
-=======
-    install_requires=['sagemaker-containers>=2.2.6', 'numpy', 'scipy', 'sklearn',
->>>>>>> Add distributed training support (#98)
-=======
-    install_requires=['sagemaker-containers>==2.3.1', 'numpy', 'scipy', 'sklearn',
->>>>>>> Update sagemaker containers (#119)
-=======
-    install_requires=['sagemaker-containers>=2.3.4', 'numpy', 'scipy', 'sklearn',
->>>>>>> Disable GPU for parameter process (#121)
                       'pandas', 'Pillow', 'h5py'],
     extras_require={
         'test': ['tox', 'flake8', 'pytest', 'pytest-cov', 'pytest-xdist', 'mock',
-<<<<<<< HEAD
                  'sagemaker==1.19.1', 'tensorflow<2.0', 'docker-compose', 'botocore>=1.12.140'],
         'benchmark': ['click']
-=======
-                 'sagemaker>=1.15.2', 'tensorflow', 'docker-compose']
->>>>>>> Create parameter server in different thread (#129)
     },
 )

@@ -14,32 +14,18 @@ from __future__ import absolute_import
 
 import json
 import logging
-<<<<<<< HEAD
-<<<<<<< HEAD
 import multiprocessing
 import os
-=======
->>>>>>> Add distributed training support (#98)
-=======
-import os
->>>>>>> Set S3 environment variables (#112)
 import subprocess
-import threading
 import time
 
 import sagemaker_containers.beta.framework as framework
 import tensorflow as tf
-<<<<<<< HEAD
-
-from sagemaker_tensorflow_container import s3_utils
-=======
->>>>>>> Create parameter server in different thread (#129)
 
 from sagemaker_tensorflow_container import s3_utils
 
 logger = logging.getLogger(__name__)
 
-<<<<<<< HEAD
 SAGEMAKER_PARAMETER_SERVER_ENABLED = 'sagemaker_parameter_server_enabled'
 MODEL_DIR = '/opt/ml/model'
 
@@ -51,13 +37,11 @@ def _is_host_master(hosts, current_host):
 def _build_tf_config(hosts, current_host, ps_task=False):
     """Builds a dictionary containing cluster information based on number of hosts and number of
     parameter servers.
-
     Args:
         hosts (list[str]): List of host names in the cluster
         current_host (str): Current host name
         ps_task (bool): Set to True if this config is built for a parameter server process
             (default: False)
-
     Returns:
         dict[str: dict]: A dictionary describing the cluster setup for distributed training.
             For more information regarding TF_CONFIG:
@@ -123,129 +107,7 @@ def _run_worker(env, cmd_args, tf_config):
     env_vars = env.to_env_vars()
     env_vars['TF_CONFIG'] = json.dumps(tf_config)
 
-<<<<<<< HEAD
     framework.entry_point.run(env.module_dir, env.user_entry_point, cmd_args, env_vars)
-=======
-=======
->>>>>>> Create parameter server in different thread (#129)
-SAGEMAKER_PARAMETER_SERVER_ENABLED = 'sagemaker_parameter_server_enabled'
-
-
-def _is_host_master(hosts, current_host):
-    return current_host == hosts[0]
-
-
-def _build_tf_config(hosts, current_host, ps_task=False):
-    """Builds a dictionary containing cluster information based on number of hosts and number of
-    parameter servers.
-
-    Args:
-        hosts (list[str]): List of host names in the cluster
-        current_host (str): Current host name
-        ps_task (bool): Set to True if this config is built for a parameter server process
-            (default: False)
-
-    Returns:
-        dict[str: dict]: A dictionary describing the cluster setup for distributed training.
-            For more information regarding TF_CONFIG:
-            https://cloud.google.com/ml-engine/docs/tensorflow/distributed-training-details
-    """
-    # Assign the first host as the master. Rest of the hosts if any will be worker hosts.
-    # The first ps_num hosts will also have a parameter task assign to them.
-    masters = hosts[:1]
-    workers = hosts[1:]
-    ps = hosts if len(hosts) > 1 else None
-
-    def host_addresses(hosts, port=2222):
-        return ['{}:{}'.format(host, port) for host in hosts]
-
-    tf_config = {
-        'cluster': {
-            'master': host_addresses(masters)
-        },
-        'environment': 'cloud'
-    }
-
-    if ps:
-        tf_config['cluster']['ps'] = host_addresses(ps, port='2223')
-
-    if workers:
-        tf_config['cluster']['worker'] = host_addresses(workers)
-
-    if ps_task:
-        if ps is None:
-            raise ValueError(
-                'Cannot have a ps task if there are no parameter servers in the cluster')
-        task_type = 'ps'
-        task_index = ps.index(current_host)
-    elif _is_host_master(hosts, current_host):
-        task_type = 'master'
-        task_index = 0
-    else:
-        task_type = 'worker'
-        task_index = workers.index(current_host)
-
-    tf_config['task'] = {'index': task_index, 'type': task_type}
-    return tf_config
-
-
-def _run_ps(env, cluster):
-    logger.info('Running distributed training job with parameter servers')
-
-    cluster_spec = tf.train.ClusterSpec(cluster)
-    task_index = env.hosts.index(env.current_host)
-    # Force parameter server to run on cpu. Running multiple TensorFlow processes on the same
-    # GPU is not safe:
-    # https://stackoverflow.com/questions/46145100/is-it-unsafe-to-run-multiple-tensorflow-processes-on-the-same-gpu
-    no_gpu_config = tf.ConfigProto(device_count={'GPU': 0})
-
-    server = tf.train.Server(
-        cluster_spec, job_name='ps', task_index=task_index, config=no_gpu_config
-    )
-
-    threading.Thread(target=lambda: server.join()).start()
-
-
-def _run_worker(env, tf_config):
-    env_vars = env.to_env_vars()
-<<<<<<< HEAD
-    env_vars['TF_CONFIG'] = json.dumps(_build_tf_config(
-        hosts=env.hosts,
-        current_host=env.current_host,
-        ps_task=ps_task))
-    return env_vars
-
-
-def _run_ps(env):
-    env_vars = _env_vars_with_tf_config(env, ps_task=True)
-    # Parameter server processes should always run on CPU. Sets CUDA_VISIBLE_DEVICES to '-1' forces
-    # TensorFlow to use CPU.
-    env_vars['CUDA_VISIBLE_DEVICES'] = json.dumps(-1)
-    framework.entry_point.run(env.module_dir, env.user_entry_point,
-                              env.to_cmd_args(), env_vars, wait=False)
-
-
-def _run_worker(env):
-    # when _run_ps is called CUDA_VISIBLE_DEVICES is set with os.environ.
-    # We need to unset it so the worker process can use the GPUs.
-    if os.environ.get('CUDA_VISIBLE_DEVICES'):
-        del os.environ['CUDA_VISIBLE_DEVICES']
-    env_vars = _env_vars_with_tf_config(env, ps_task=False)
-<<<<<<< HEAD
-    if install_module:
-        return framework.modules.run_module(
-            env.module_dir, env.to_cmd_args(), env_vars, env.module_name)
-    else:
-        framework.modules.write_env_vars(env_vars)
-        framework.modules.run(env.module_name, env.to_cmd_args(), env_vars)
->>>>>>> Add distributed training support (#98)
-=======
-=======
-    env_vars['TF_CONFIG'] = json.dumps(tf_config)
-
->>>>>>> Create parameter server in different thread (#129)
-    framework.entry_point.run(env.module_dir, env.user_entry_point, env.to_cmd_args(), env_vars)
->>>>>>> Update sagemaker containers (#119)
 
 
 def _wait_until_master_is_down(master):
@@ -260,13 +122,8 @@ def _wait_until_master_is_down(master):
             return
 
 
-<<<<<<< HEAD
 def train(env, cmd_args):
-=======
-def train(env):
->>>>>>> Add distributed training support (#98)
     """Get training job environment from env and run the training job.
-
     Args:
         env (sagemaker_containers.beta.framework.env.TrainingEnv): Instance of TrainingEnv class
     """
@@ -274,8 +131,6 @@ def train(env):
         SAGEMAKER_PARAMETER_SERVER_ENABLED, False)
     if len(env.hosts) > 1 and parameter_server_enabled:
 
-<<<<<<< HEAD
-<<<<<<< HEAD
         tf_config = _build_tf_config(hosts=env.hosts, current_host=env.current_host)
 
         logger.info('Running distributed training job with parameter servers')
@@ -283,32 +138,11 @@ def train(env):
         _run_ps(env, tf_config['cluster'])
         logger.info('Launching worker process')
         _run_worker(env, cmd_args, tf_config)
-=======
-=======
-        tf_config = _build_tf_config(hosts=env.hosts, current_host=env.current_host)
-
->>>>>>> Create parameter server in different thread (#129)
-        logger.info('Running distributed training job with parameter servers')
-        logger.info('Launching parameter server process')
-        _run_ps(env, tf_config['cluster'])
-        logger.info('Launching worker process')
-<<<<<<< HEAD
-<<<<<<< HEAD
-        _run_worker(env, install_module=False)
->>>>>>> Add distributed training support (#98)
-=======
-        _run_worker(env)
->>>>>>> Update sagemaker containers (#119)
-=======
-        _run_worker(env, tf_config)
->>>>>>> Create parameter server in different thread (#129)
 
         if not _is_host_master(env.hosts, env.current_host):
             _wait_until_master_is_down(env.hosts[0])
 
     else:
-<<<<<<< HEAD
-<<<<<<< HEAD
 
         mpi_enabled = env.additional_framework_parameters.get('sagemaker_mpi_enabled')
 
@@ -332,7 +166,7 @@ def _log_model_missing_warning(model_dir):
                 pb_file_exists = True
                 path, direct_parent_dir = os.path.split(dirpath)
                 if not str.isdigit(direct_parent_dir):
-                    logger.warn('Your model will NOT be servable with SageMaker TensorFlow Serving containers.'
+                    logger.warn('Your model will NOT be servable with SageMaker TensorFlow Serving containers. '
                                 'The SavedModel bundle is under directory \"{}\", not a numeric name.'
                                 .format(direct_parent_dir))
 
@@ -340,10 +174,10 @@ def _log_model_missing_warning(model_dir):
         logger.warn('No model artifact is saved under path {}.'
                     ' Your training job will not save any model files to S3.\n'
                     'For details of how to construct your training script see:\n'
-                    'https://github.com/aws/sagemaker-python-sdk/tree/master/src/sagemaker/tensorflow#adapting-your-local-tensorflow-script' # noqa
+                    'https://sagemaker.readthedocs.io/en/stable/using_tf.html#adapting-your-local-tensorflow-script'
                     .format(model_dir))
     elif not pb_file_exists:
-        logger.warn('Your model will NOT be servable with SageMaker TensorFlow Serving container.'
+        logger.warn('Your model will NOT be servable with SageMaker TensorFlow Serving container. '
                     'The model artifact was not saved in the TensorFlow SavedModel directory structure:\n'
                     'https://www.tensorflow.org/guide/saved_model#structure_of_a_savedmodel_directory')
 
@@ -353,14 +187,6 @@ def _model_dir_with_training_job(model_dir, job_name):
         return model_dir
     else:
         return '{}/{}/model'.format(model_dir, job_name)
-=======
-        framework.modules.run_module(env.module_dir, env.to_cmd_args(),
-                                     env.to_env_vars(), env.module_name)
->>>>>>> Add distributed training support (#98)
-=======
-        framework.entry_point.run(env.module_dir, env.user_entry_point,
-                                  env.to_cmd_args(), env.to_env_vars())
->>>>>>> Update sagemaker containers (#119)
 
 
 def main():
@@ -368,7 +194,6 @@ def main():
     """
     hyperparameters = framework.env.read_hyperparameters()
     env = framework.training_env(hyperparameters=hyperparameters)
-<<<<<<< HEAD
 
     user_hyperparameters = env.hyperparameters
 
@@ -382,8 +207,3 @@ def main():
     s3_utils.configure(user_hyperparameters.get('model_dir'), os.environ.get('SAGEMAKER_REGION'))
     train(env, framework.mapping.to_cmd_args(user_hyperparameters))
     _log_model_missing_warning(MODEL_DIR)
-=======
-    s3_utils.configure(env.hyperparameters.get('model_dir'), os.environ.get('SAGEMAKER_REGION'))
-    logger.setLevel(env.log_level)
-    train(env)
->>>>>>> Set S3 environment variables (#112)
