@@ -24,7 +24,6 @@ from keras import backend as K
 import tensorflow as tf
 import horovod.keras as hvd
 
-
 # Horovod: initialize Horovod.
 hvd.init()
 
