@@ -6,9 +6,5 @@ dist
 *.iml
 **/.ipynb_checkpoints
 **/.python-version
-<<<<<<< HEAD
 .tox
 *~
-=======
-.tox
->>>>>>> Add Horovod benchmark (#157)
