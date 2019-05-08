@@ -17,7 +17,6 @@ import logging
 import multiprocessing
 import os
 import subprocess
-import threading
 import time
 
 import sagemaker_containers.beta.framework as framework
