@@ -11,7 +11,7 @@ phases:
   pre_build:
     commands:
       - start-dockerd
-      - ACCOUNT=$(aws sts get-caller-identity --query 'Account' --output text)
+      - ACCOUNT=$(aws --region $AWS_DEFAULT_REGION sts --endpoint-url https://sts.$AWS_DEFAULT_REGION.amazonaws.com get-caller-identity --query 'Account' --output text)
 
   build:
     commands:
@@ -77,7 +77,6 @@ phases:
             "IGNORE_COVERAGE=- tox -e py36 -- -m deploy_test test/integration/sagemaker -n 4 --region {region} --account-id {aws-id} --docker-base-name sagemaker-tensorflow-scriptmode --framework-version 1.13.1 --processor gpu --py-version 2,3"
           ]
         }]' > deployments.json
-
       # publish the release to github
       - git-release --publish
 
