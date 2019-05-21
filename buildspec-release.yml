@@ -77,7 +77,6 @@ phases:
             "IGNORE_COVERAGE=- tox -e py36 -- -m deploy_test test/integration/sagemaker -n 4 --region {region} --account-id {aws-id} --docker-base-name sagemaker-tensorflow-scriptmode --framework-version 1.13.1 --processor gpu --py-version 2,3"
           ]
         }]' > deployments.json
-
       # publish the release to github
       - git-release --publish
 
