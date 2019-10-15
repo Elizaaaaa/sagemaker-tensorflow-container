@@ -105,9 +105,13 @@ ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PYTHONIOENCODING=UTF-8 LANG=C.U
 
 WORKDIR /
 
-ARG TF_URL="https://tensorflow-aws.s3-us-west-2.amazonaws.com/1.14/AmazonLinux/gpu/final/tensorflow-1.14.0-cp36-cp36m-linux_x86_64.whl"
+# before whl publish
+ARG sagemaker_tensorflow_extensions=tensorflow_gpu-1.15.0rc1-cp36-cp36m-manylinux2010_x86_64.whl
+ARG TF_URL="s3://tensorflow-aws-beta/1.15/AmazonLinux/gpu/latest-patch-r1.15_s3.patch/tensorflow_gpu-1.15.0rc1-cp36-cp36m-manylinux2010_x86_64.whl"
+# ARG TF_URL="https://tensorflow-aws.s3-us-west-2.amazonaws.com/1.14/AmazonLinux/gpu/final/tensorflow-1.14.0-cp36-cp36m-linux_x86_64.whl"
 
-RUN ${PIP} --no-cache-dir install --upgrade pip setuptools
+RUN ${PIP} --no-cache-dir install --upgrade pip setuptools awscli
+RUN aws s3 cp ${TF_URL} .
 
 # Some TF tools expect a "python" binary
 RUN ln -s $(which ${PYTHON}) /usr/local/bin/python
@@ -128,10 +132,12 @@ RUN ${PIP} install --no-cache-dir -U \
     keras==2.2.4 \
     awscli==1.16.196 \
     mpi4py==3.0.2 \
-    "sagemaker-tensorflow>=1.14,<1.15" \
+    # before whl publish
+    # "sagemaker-tensorflow>=1.14,<1.15" \
+    $sagemaker_tensorflow_extensions \
     # Let's install TensorFlow separately in the end to avoid
     # the library version to be overwritten
-    && ${PIP} install --force-reinstall --no-cache-dir -U ${TF_URL} \
+    # && ${PIP} install --force-reinstall --no-cache-dir -U ${TF_URL} \
     && ${PIP} install --no-cache-dir -U $framework_support_installable && \
            rm -f $framework_support_installable \
     && ${PIP} uninstall -y --no-cache-dir \
