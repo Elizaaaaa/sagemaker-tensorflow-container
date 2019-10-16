@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends --allow-unauthe
         libnccl-dev=2.4.7-1+cuda10.0 \
         libfreetype6-dev \
         libhdf5-serial-dev \
-        libpng12-dev \
+        libpng-dev \
         libzmq3-dev \
         git \
         wget \
