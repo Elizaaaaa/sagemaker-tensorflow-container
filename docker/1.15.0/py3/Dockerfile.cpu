@@ -72,9 +72,9 @@ RUN wget https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSIO
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PYTHONIOENCODING=UTF-8 LANG=C.UTF-8 LC_ALL=C.UTF-8
 
 ARG framework_support_installable=sagemaker_tensorflow_container-2.0.0.tar.gz
-ARG sagemaker_tensorflow_extensions=tensorflow-1.15.0rc1-cp36-cp36m-manylinux2010_x86_64.whl
+ARG sagemaker_tensorflow_extensions=tensorflow-1.15.0-cp36-cp36m-manylinux2010_x86_64.whl
 COPY $framework_support_installable .
-COPY $sagemaker_tensorflow_extensions /tmp/cpu/latest-patch-r1.15_s3.patch/tensorflow-1.15.0rc1-cp36-cp36mu-manylinux2010_x86_64.whl
+COPY $sagemaker_tensorflow_extensions .
 
 # ARG TF_URL="https://tensorflow-aws.s3-us-west-2.amazonaws.com/1.14/AmazonLinux/cpu/final/tensorflow-1.14.0-cp36-cp36m-linux_x86_64.whl"
 
