@@ -105,7 +105,7 @@ RUN ln -s $(which ${PYTHON}) /usr/local/bin/python
 ARG framework_support_installable=sagemaker_tensorflow_container-2.0.0.tar.gz
 ARG sagemaker_tensorflow_extensions=tensorflow_gpu-1.15.0rc1-cp27-cp27mu-manylinux2010_x86_64.whl
 COPY $framework_support_installable .
-COPY ../../tmp/gpu/latest-patch-r1.15_s3.patch/tensorflow_gpu-1.15.0rc1-cp27-cp27mu-manylinux2010_x86_64.whl $sagemaker_tensorflow_extensions /
+COPY $sagemaker_tensorflow_extensions .
 
 RUN ${PIP} install --no-cache-dir -U \
             numpy==1.16.4 \
