@@ -72,14 +72,13 @@ RUN wget https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSIO
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PYTHONIOENCODING=UTF-8 LANG=C.UTF-8 LC_ALL=C.UTF-8
 
 ARG framework_support_installable=sagemaker_tensorflow_container-2.0.0.tar.gz
-# before whl publish
 ARG sagemaker_tensorflow_extensions=tensorflow-1.15.0rc1-cp36-cp36m-manylinux2010_x86_64.whl
 COPY $framework_support_installable .
-# ARG TF_URL="https://tensorflow-aws.s3-us-west-2.amazonaws.com/1.14/AmazonLinux/cpu/final/tensorflow-1.14.0-cp36-cp36m-linux_x86_64.whl"
-ARG TF_URL="s3://tensorflow-aws-beta/1.15/AmazonLinux/cpu/latest-patch-r1.15_s3.patch/tensorflow-1.15.0rc1-cp36-cp36m-manylinux2010_x86_64.whl"
+COPY $sagemaker_tensorflow_extensions /tmp/cpu/latest-patch-r1.15_s3.patch/tensorflow-1.15.0rc1-cp36-cp36mu-manylinux2010_x86_64.whl
 
-RUN ${PIP} --no-cache-dir install --upgrade pip setuptools awscli
-RUN aws s3 cp ${TF_URL} .
+# ARG TF_URL="https://tensorflow-aws.s3-us-west-2.amazonaws.com/1.14/AmazonLinux/cpu/final/tensorflow-1.14.0-cp36-cp36m-linux_x86_64.whl"
+
+RUN ${PIP} --no-cache-dir install --upgrade pip setuptools 
 
 # Some TF tools expect a "python" binary
 RUN ln -s $(which ${PYTHON}) /usr/local/bin/python
@@ -97,13 +96,11 @@ RUN ${PIP} install --no-cache-dir -U \
            requests==2.22.0 \
            awscli==1.16.196 \
            mpi4py==3.0.2 \
-    # before whl publish
            $sagemaker_tensorflow_extensions \
     #       "sagemaker-tensorflow>=1.14,<1.15" && \
     # Let's install TensorFlow separately in the end to avoid
     # the library version to be overwritten
     ${PIP} install --force-reinstall --no-cache-dir -U \
-    # before whl publish
     #       ${TF_URL} \
            horovod==0.18.1 && \
     ${PIP} install --no-cache-dir -U $framework_support_installable && \
