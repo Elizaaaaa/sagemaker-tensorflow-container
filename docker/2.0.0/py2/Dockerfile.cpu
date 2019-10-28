@@ -100,7 +100,7 @@ RUN ${PIP} install --no-cache-dir -U \
     # && ${PIP} install --force-reinstall --no-cache-dir -U ${TF_URL} \
     && ${PIP} install --no-cache-dir -U $framework_support_installable && \
         rm -f $framework_support_installable \
-    && ${PIP} install --no-cache-dir -U horovod==0.18.1 \
+    && ${PIP} install --no-cache-dir -U horovod==0.18.2 \
     && ${PIP} uninstall -y --no-cache-dir \
         markdown
 
