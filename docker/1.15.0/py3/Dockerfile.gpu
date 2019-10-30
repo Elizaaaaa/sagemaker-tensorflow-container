@@ -110,7 +110,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PYTHONIOENCODING=UTF-8 LANG=C.U
 WORKDIR /
 
 # before whl publish
-ARG sagemaker_tensorflow_extensions=tensorflow_gpu-1.15.0-cp36-cp36m-manylinux2010_x86_64.whl
+#This has not been released for 1.15 changing the name to reference the tensorfow wheel
+ARG tensorflow_whl=tensorflow_gpu-1.15.0-cp36-cp36m-manylinux2010_x86_64.whl
 # ARG TF_URL="https://tensorflow-aws.s3-us-west-2.amazonaws.com/1.14/AmazonLinux/gpu/final/tensorflow-1.14.0-cp36-cp36m-linux_x86_64.whl"
 
 RUN ${PIP} --no-cache-dir install --upgrade pip setuptools 
@@ -120,7 +121,7 @@ RUN ln -s $(which ${PYTHON}) /usr/local/bin/python
 
 ARG framework_support_installable=sagemaker_tensorflow_container-2.0.0.tar.gz
 COPY $framework_support_installable .
-COPY $sagemaker_tensorflow_extensions .
+COPY $tensorflow_whl .
 
 RUN ${PIP} install --no-cache-dir -U \
     numpy==1.16.4 \
@@ -137,7 +138,7 @@ RUN ${PIP} install --no-cache-dir -U \
     mpi4py==3.0.2 \
     # before whl publish
     # "sagemaker-tensorflow>=1.14,<1.15" \
-    $sagemaker_tensorflow_extensions \
+    $tensorflow_whl \
     # Let's install TensorFlow separately in the end to avoid
     # the library version to be overwritten
     # && ${PIP} install --force-reinstall --no-cache-dir -U ${TF_URL} \
