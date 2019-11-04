@@ -3,7 +3,7 @@ FROM nvidia/cuda:9.0-base-ubuntu16.04
 MAINTAINER Amazon AI
 
 ARG framework_installable
-ARG framework_support_installable=sagemaker_tensorflow_container-2.0.0.tar.gz
+ARG framework_support_installable=sagemaker_tensorflow_container-2.0.8.dev0.tar.gz
 ARG py_version
 
 # Validate that arguments are specified

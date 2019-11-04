@@ -75,7 +75,7 @@ RUN wget https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSIO
 
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PYTHONIOENCODING=UTF-8 LANG=C.UTF-8 LC_ALL=C.UTF-8
 
-ARG framework_support_installable=sagemaker_tensorflow_container-2.0.0.tar.gz
+ARG framework_support_installable=sagemaker_tensorflow_container-2.0.8.dev0.tar.gz
 ARG tensorflow_whl=tensorflow-1.15.0-cp36-cp36m-manylinux2010_x86_64.whl
 COPY $framework_support_installable .
 COPY $tensorflow_whl .
